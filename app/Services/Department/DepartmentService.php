@@ -11,7 +11,7 @@ class DepartmentService
     public function all(?string $search = null): Collection
     {
         return Department::query()
-            ->with('departmentHead')
+            ->with('managerEmployee')
             ->withCount('employees')
             ->when($search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
@@ -26,21 +26,21 @@ class DepartmentService
     public function find(int $id): Department
     {
         return Department::query()
-            ->with('departmentHead')
+            ->with('managerEmployee')
             ->withCount('employees')
             ->findOrFail($id);
     }
 
     public function create(array $data): Department
     {
-        return Department::query()->create($data)->load('departmentHead');
+        return Department::query()->create($data)->load('managerEmployee');
     }
 
     public function update(Department $department, array $data): Department
     {
         $department->update($data);
 
-        return $department->fresh(['departmentHead'])->loadCount('employees');
+        return $department->fresh(['managerEmployee'])->loadCount('employees');
     }
 
     public function delete(Department $department): void

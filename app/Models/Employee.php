@@ -27,7 +27,7 @@ class Employee extends Model
         'date_of_birth',
         'blood_group',
         'gender',
-        'profile_photo',
+        'profile_photo_id',
         'department_id',
         'designation_id',
         'status',
@@ -63,6 +63,11 @@ class Employee extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function profilePhoto(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'profile_photo_id');
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
@@ -88,9 +93,19 @@ class Employee extends Model
         return $this->hasMany(Employee::class, 'manager_id');
     }
 
+    public function shift(): BelongsTo
+    {
+        return $this->belongsTo(Shift::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class)->latest('created_at');
+    }
+
     public function emergencyContacts(): HasMany
     {
-        return $this->hasMany(EmployeeEmergencyContact::class);
+        return $this->hasMany(EmployeeEmergencyContact::class)->orderBy('priority');
     }
 
     public function getFullNameAttribute(): string

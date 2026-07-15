@@ -3,6 +3,7 @@ import { designationService } from '../services/designationService';
 
 const defaultForm = () => ({
     name: '',
+    level: 1,
     description: '',
 });
 
@@ -47,6 +48,7 @@ export function useDesignations() {
         editingId.value = designation.id;
         Object.assign(form, {
             name: designation.name ?? '',
+            level: designation.level ?? 1,
             description: designation.description ?? '',
         });
         errors.value = {};
@@ -65,6 +67,7 @@ export function useDesignations() {
 
         const payload = {
             name: form.name,
+            level: form.level,
             description: form.description || null,
         };
 

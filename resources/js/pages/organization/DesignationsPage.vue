@@ -1,19 +1,17 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { useDepartments } from '../../composables/useDepartments';
+import { useDesignations } from '../../composables/useDesignations';
 import AppLayout from '../../layouts/AppLayout.vue';
 import PageHeader from '../../components/ui/PageHeader.vue';
 import BaseButton from '../../components/ui/BaseButton.vue';
 import BaseInput from '../../components/ui/BaseInput.vue';
-import BaseSelect from '../../components/ui/BaseSelect.vue';
 import BaseTextarea from '../../components/ui/BaseTextarea.vue';
 import BaseTable from '../../components/ui/BaseTable.vue';
 import BaseModal from '../../components/ui/BaseModal.vue';
 import ConfirmDialog from '../../components/ui/ConfirmDialog.vue';
 
 const {
-    departments,
-    employees,
+    designations,
     isLoading,
     isSaving,
     search,
@@ -22,14 +20,13 @@ const {
     form,
     errors,
     isEditing,
-    fetchDepartments,
-    loadEmployees,
+    fetchDesignations,
     openCreateModal,
     openEditModal,
     closeModal,
     save,
     remove,
-} = useDepartments();
+} = useDesignations();
 
 const showDeleteDialog = ref(false);
 const itemToDelete = ref(null);
@@ -37,17 +34,17 @@ const isDeleting = ref(false);
 const deleteError = ref('');
 let searchTimeout = null;
 
-onMounted(async () => {
-    await Promise.all([fetchDepartments(), loadEmployees()]);
+onMounted(() => {
+    fetchDesignations();
 });
 
 watch(search, () => {
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => fetchDepartments(), 300);
+    searchTimeout = setTimeout(() => fetchDesignations(), 300);
 });
 
-function confirmDelete(department) {
-    itemToDelete.value = department;
+function confirmDelete(designation) {
+    itemToDelete.value = designation;
     deleteError.value = '';
     showDeleteDialog.value = true;
 }
@@ -66,8 +63,8 @@ async function handleDelete() {
         itemToDelete.value = null;
     } catch (err) {
         deleteError.value = err.response?.data?.message
-            ?? err.response?.data?.errors?.department?.[0]
-            ?? 'Failed to delete department.';
+            ?? err.response?.data?.errors?.designation?.[0]
+            ?? 'Failed to delete designation.';
     } finally {
         isDeleting.value = false;
     }
@@ -78,63 +75,55 @@ async function handleDelete() {
     <AppLayout>
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <PageHeader
-                title="Departments"
-                description="Organize your workforce into departments and teams."
+                title="Designations"
+                description="Define job titles and designations across your organization."
             />
             <BaseButton class="shrink-0" @click="openCreateModal">
-                Add Department
+                Add Designation
             </BaseButton>
         </div>
 
         <div class="mb-4">
             <BaseInput
-                id="department_search"
+                id="designation_search"
                 v-model="search"
-                label="Search departments"
+                label="Search designations"
                 placeholder="Search by name or description"
             />
         </div>
 
         <p v-if="error" class="mb-4 text-sm text-red-600">{{ error }}</p>
 
-        <BaseTable :loading="isLoading" :empty="!isLoading && departments.length === 0" empty-message="No departments found.">
+        <BaseTable :loading="isLoading" :empty="!isLoading && designations.length === 0" empty-message="No designations found.">
             <thead class="bg-slate-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Level</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Description</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Head</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Employees</th>
                     <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-200 bg-white">
-                <tr v-for="department in departments" :key="department.id" class="hover:bg-slate-50">
+                <tr v-for="designation in designations" :key="designation.id" class="hover:bg-slate-50">
                     <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-slate-900">
-                        {{ department.name }}
-                    </td>
-                    <td class="max-w-xs truncate px-6 py-4 text-sm text-slate-600">
-                        {{ department.description || '—' }}
+                        {{ designation.name }}
                     </td>
                     <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
-                        {{ department.department_head?.full_name ?? '—' }}
+                        {{ designation.level }}
+                    </td>
+                    <td class="max-w-md truncate px-6 py-4 text-sm text-slate-600">
+                        {{ designation.description || '—' }}
                     </td>
                     <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
-                        {{ department.employees_count ?? 0 }}
+                        {{ designation.employees_count ?? 0 }}
                     </td>
                     <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                         <div class="flex justify-end gap-2">
-                            <button
-                                type="button"
-                                class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
-                                @click="openEditModal(department)"
-                            >
+                            <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100" @click="openEditModal(designation)">
                                 Edit
                             </button>
-                            <button
-                                type="button"
-                                class="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
-                                @click="confirmDelete(department)"
-                            >
+                            <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50" @click="confirmDelete(designation)">
                                 Delete
                             </button>
                         </div>
@@ -143,38 +132,22 @@ async function handleDelete() {
             </tbody>
         </BaseTable>
 
-        <BaseModal
-            :open="showModal"
-            :title="isEditing() ? 'Edit Department' : 'Add Department'"
-            @close="closeModal"
-        >
+        <BaseModal :open="showModal" :title="isEditing() ? 'Edit Designation' : 'Add Designation'" @close="closeModal">
             <form class="space-y-4" @submit.prevent="save">
-                <BaseInput id="department_name" v-model="form.name" label="Name" :error="errors.name" />
-                <BaseTextarea id="department_description" v-model="form.description" label="Description" :error="errors.description" />
-                <BaseSelect
-                    id="department_head_id"
-                    v-model="form.department_head_id"
-                    label="Department Head"
-                    placeholder="No head assigned"
-                    :options="employees.map((e) => ({ value: e.id, label: e.full_name ?? `${e.first_name} ${e.last_name}` }))"
-                    :error="errors.department_head_id"
-                />
+                <BaseInput id="designation_name" v-model="form.name" label="Name" :error="errors.name" />
+                <BaseInput id="designation_level" v-model="form.level" label="Level" type="number" min="1" max="20" :error="errors.level" />
+                <BaseTextarea id="designation_description" v-model="form.description" label="Description" :error="errors.description" />
             </form>
-
             <template #footer>
-                <BaseButton type="button" variant="secondary" @click="closeModal">
-                    Cancel
-                </BaseButton>
-                <BaseButton :loading="isSaving" @click="save">
-                    {{ isEditing() ? 'Update' : 'Create' }}
-                </BaseButton>
+                <BaseButton type="button" variant="secondary" @click="closeModal">Cancel</BaseButton>
+                <BaseButton :loading="isSaving" @click="save">{{ isEditing() ? 'Update' : 'Create' }}</BaseButton>
             </template>
         </BaseModal>
 
         <ConfirmDialog
             :open="showDeleteDialog"
-            title="Delete Department"
-            :message="deleteError || `Are you sure you want to delete ${itemToDelete?.name ?? 'this department'}?`"
+            title="Delete Designation"
+            :message="deleteError || `Are you sure you want to delete ${itemToDelete?.name ?? 'this designation'}?`"
             confirm-label="Delete"
             :loading="isDeleting"
             @confirm="handleDelete"

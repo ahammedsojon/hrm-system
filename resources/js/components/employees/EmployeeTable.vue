@@ -6,7 +6,7 @@ const props = defineProps({
     },
 });
 
-defineEmits(['edit', 'delete']);
+defineEmits(['view', 'edit', 'delete']);
 
 const statusClasses = {
     active: 'bg-emerald-50 text-emerald-700',
@@ -57,6 +57,13 @@ function formatStatus(status) {
             </td>
             <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                 <div class="flex justify-end gap-2">
+                    <button
+                        type="button"
+                        class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                        @click="$emit('view', employee.id)"
+                    >
+                        View
+                    </button>
                     <button
                         type="button"
                         class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"

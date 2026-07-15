@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import BaseInput from '../ui/BaseInput.vue';
 import BaseSelect from '../ui/BaseSelect.vue';
 import BaseTextarea from '../ui/BaseTextarea.vue';
@@ -11,6 +12,10 @@ defineProps({
     isEdit: {
         type: Boolean,
         default: false,
+    },
+    displayPhoto: {
+        type: String,
+        default: null,
     },
     errors: {
         type: Object,
@@ -28,9 +33,19 @@ defineProps({
         type: Array,
         default: () => [],
     },
+    employmentTypes: {
+        type: Array,
+        default: () => [],
+    },
+    shifts: {
+        type: Array,
+        default: () => [],
+    },
 });
 
-const emit = defineEmits(['update:photo']);
+const emit = defineEmits(['update:photo', 'remove-photo']);
+
+const photoInput = ref(null);
 
 const genderOptions = [
     { value: 'male', label: 'Male' },
@@ -67,6 +82,14 @@ const statusOptions = [
 function handlePhotoChange(event) {
     emit('update:photo', event.target.files[0] ?? null);
 }
+
+function handleRemovePhoto() {
+    if (photoInput.value) {
+        photoInput.value.value = '';
+    }
+
+    emit('remove-photo');
+}
 </script>
 
 <template>
@@ -86,7 +109,22 @@ function handlePhotoChange(event) {
                 <BaseInput id="religion" v-model="form.religion" label="Religion (Optional)" :error="errors.religion" />
                 <div class="sm:col-span-2">
                     <label class="mb-1 block text-sm font-medium text-slate-700">Profile Photo</label>
+                    <div v-if="displayPhoto" class="mb-4 flex items-start gap-4">
+                        <img
+                            :src="displayPhoto"
+                            alt="Profile photo preview"
+                            class="h-24 w-24 rounded-lg border border-slate-200 object-cover"
+                        />
+                        <button
+                            type="button"
+                            class="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                            @click="handleRemovePhoto"
+                        >
+                            Delete
+                        </button>
+                    </div>
                     <input
+                        ref="photoInput"
                         type="file"
                         accept="image/*"
                         class="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-800"
@@ -110,12 +148,12 @@ function handlePhotoChange(event) {
                     :options="managers.map((m) => ({ value: m.id, label: m.full_name ?? `${m.first_name} ${m.last_name}` }))"
                     :error="errors.manager_id"
                 />
-                <BaseInput id="employment_type_id" v-model="form.employment_type_id" label="Employment Type ID" :error="errors.employment_type_id" />
+                <BaseSelect id="employment_type_id" v-model="form.employment_type_id" label="Employment Type" :options="employmentTypes" :error="errors.employment_type_id" />
                 <BaseInput id="joining_date" v-model="form.joining_date" label="Joining Date" type="date" :error="errors.joining_date" />
                 <BaseInput id="probation_start_date" v-model="form.probation_start_date" label="Probation Start Date" type="date" :error="errors.probation_start_date" />
                 <BaseInput id="probation_end_date" v-model="form.probation_end_date" label="Probation End Date" type="date" :error="errors.probation_end_date" />
                 <BaseInput id="branch_id" v-model="form.branch_id" label="Branch ID" :error="errors.branch_id" />
-                <BaseInput id="shift_id" v-model="form.shift_id" label="Shift ID" :error="errors.shift_id" />
+                <BaseSelect id="shift_id" v-model="form.shift_id" label="Shift" :options="shifts" :error="errors.shift_id" />
             </div>
         </section>
 

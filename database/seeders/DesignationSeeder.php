@@ -10,16 +10,19 @@ class DesignationSeeder extends Seeder
     public function run(): void
     {
         $designations = [
-            ['name' => 'Software Engineer', 'description' => 'Develops and maintains software applications.'],
-            ['name' => 'HR Manager', 'description' => 'Oversees human resources functions and policies.'],
-            ['name' => 'Team Lead', 'description' => 'Leads a team and coordinates project delivery.'],
-            ['name' => 'Accountant', 'description' => 'Manages financial records and reporting.'],
+            ['name' => 'Software Engineer', 'level' => 2, 'description' => 'Develops and maintains software applications.'],
+            ['name' => 'HR Manager', 'level' => 4, 'description' => 'Oversees human resources functions and policies.'],
+            ['name' => 'Team Lead', 'level' => 3, 'description' => 'Leads a team and coordinates project delivery.'],
+            ['name' => 'Accountant', 'level' => 2, 'description' => 'Manages financial records and reporting.'],
         ];
 
         foreach ($designations as $designation) {
             Designation::query()->updateOrCreate(
                 ['name' => $designation['name']],
-                ['description' => $designation['description']],
+                [
+                    'level' => $designation['level'],
+                    'description' => $designation['description'],
+                ],
             );
         }
     }

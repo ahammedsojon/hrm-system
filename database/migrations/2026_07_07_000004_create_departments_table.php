@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('department_head_id')->nullable();
+            $table->unsignedBigInteger('manager_employee_id')->nullable();
             $table->timestamps();
         });
     }

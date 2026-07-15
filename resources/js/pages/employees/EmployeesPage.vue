@@ -39,6 +39,10 @@ function goToCreate() {
     router.push({ name: 'employees.create' });
 }
 
+function goToView(id) {
+    router.push({ name: 'employees.show', params: { id } });
+}
+
 function goToEdit(id) {
     router.push({ name: 'employees.edit', params: { id } });
 }
@@ -100,6 +104,7 @@ function changePage(page) {
             <EmployeeTable
                 v-if="employees.length"
                 :employees="employees"
+                @view="goToView"
                 @edit="goToEdit"
                 @delete="confirmDelete"
             />

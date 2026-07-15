@@ -17,6 +17,9 @@ class EmployeeEmergencyContactResource extends JsonResource
             'relationship' => $this->relationship,
             'address' => $this->address,
             'priority' => $this->priority,
+            'employee' => new EmployeeSummaryResource($this->whenLoaded('employee')),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

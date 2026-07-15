@@ -15,6 +15,7 @@ class StoreDesignationRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100', 'unique:designations,name'],
+            'level' => ['required', 'integer', 'min:1', 'max:20'],
             'description' => ['nullable', 'string'],
         ];
     }

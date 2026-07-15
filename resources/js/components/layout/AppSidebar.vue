@@ -1,16 +1,17 @@
 <script setup>
-import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { navigation } from '../../config/navigation';
 import NavIcon from '../ui/NavIcon.vue';
 
 const route = useRoute();
 
-const employeesRoutes = ['employees', 'departments', 'designations'];
+function isGroupActive(item) {
+    if (!item.children?.length) {
+        return false;
+    }
 
-const isEmployeesActive = computed(() =>
-    employeesRoutes.includes(route.name),
-);
+    return item.children.some((child) => child.to?.name === route.name);
+}
 
 function isActive(item) {
     if (item.to?.name) {
@@ -49,7 +50,7 @@ function childLinkClasses(active) {
             <div v-else class="pt-2">
                 <div
                     class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium"
-                    :class="isEmployeesActive ? 'text-slate-900' : 'text-slate-500'"
+                    :class="isGroupActive(item) ? 'text-slate-900' : 'text-slate-500'"
                 >
                     <NavIcon :name="item.icon" />
                     <span>{{ item.label }}</span>

@@ -5,7 +5,7 @@ import { employeeService } from '../services/employeeService';
 const defaultForm = () => ({
     name: '',
     description: '',
-    department_head_id: '',
+    manager_employee_id: '',
 });
 
 export function useDepartments() {
@@ -56,7 +56,7 @@ export function useDepartments() {
         Object.assign(form, {
             name: department.name ?? '',
             description: department.description ?? '',
-            department_head_id: department.department_head_id ?? '',
+            manager_employee_id: department.manager_employee_id ?? '',
         });
         errors.value = {};
         showModal.value = true;
@@ -75,7 +75,7 @@ export function useDepartments() {
         const payload = {
             name: form.name,
             description: form.description || null,
-            department_head_id: form.department_head_id || null,
+            manager_employee_id: form.manager_employee_id || null,
         };
 
         try {

@@ -15,16 +15,20 @@ const employeeId = computed(() => (isEdit.value ? Number(route.params.id) : null
 
 const {
     form,
-    photo,
+    displayPhoto,
     departments,
     designations,
     managers,
+    employmentTypes,
+    shifts,
     errors,
     isLoading,
     isSaving,
     loadOptions,
     loadEmployee,
     resetForm,
+    setPhoto,
+    removePhoto,
     save,
 } = useEmployeeForm();
 
@@ -67,10 +71,14 @@ function handleCancel() {
                 :form="form"
                 :errors="errors"
                 :is-edit="isEdit"
+                :display-photo="displayPhoto"
                 :departments="departments"
                 :designations="designations"
                 :managers="managers"
-                @update:photo="photo = $event"
+                :employment-types="employmentTypes"
+                :shifts="shifts"
+                @update:photo="setPhoto"
+                @remove-photo="removePhoto"
             />
 
             <div class="mt-6 flex justify-end gap-3">

@@ -20,6 +20,7 @@ class AuthService
 
         /** @var User $user */
         $user = Auth::user();
+        $user->loadMissing('employee');
 
         return $user;
     }
@@ -36,6 +37,7 @@ class AuthService
     {
         /** @var User $user */
         $user = Auth::user();
+        $user->loadMissing('employee');
 
         return $user;
     }

@@ -18,6 +18,7 @@ class DesignationService
                         ->orWhere('description', 'like', "%{$search}%");
                 });
             })
+            ->orderBy('level')
             ->orderBy('name')
             ->get();
     }

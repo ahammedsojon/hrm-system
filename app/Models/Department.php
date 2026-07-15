@@ -11,12 +11,12 @@ class Department extends Model
     protected $fillable = [
         'name',
         'description',
-        'department_head_id',
+        'manager_employee_id',
     ];
 
-    public function departmentHead(): BelongsTo
+    public function managerEmployee(): BelongsTo
     {
-        return $this->belongsTo(Employee::class, 'department_head_id');
+        return $this->belongsTo(Employee::class, 'manager_employee_id');
     }
 
     public function employees(): HasMany

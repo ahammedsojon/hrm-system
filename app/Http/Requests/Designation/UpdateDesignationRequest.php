@@ -24,6 +24,7 @@ class UpdateDesignationRequest extends FormRequest
                 Rule::unique('designations', 'name')->ignore($designationId),
             ],
             'description' => ['nullable', 'string'],
+            'level' => ['required', 'integer', 'min:1', 'max:20'],
         ];
     }
 }

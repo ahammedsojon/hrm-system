@@ -12,6 +12,9 @@ class EmploymentTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'employees_count' => $this->whenCounted('employees'),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

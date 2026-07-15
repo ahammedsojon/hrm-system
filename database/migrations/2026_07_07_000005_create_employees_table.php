@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('blood_group')->nullable();
             $table->string('gender')->nullable();
-            $table->string('profile_photo')->nullable();
+            $table->foreignId('profile_photo_id')->nullable()->constrained('media')->nullOnDelete();
             $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('designation_id')->nullable()->constrained()->nullOnDelete();
             $table->string('status')->default('active');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->foreignId('employment_type_id')->nullable()->constrained('employment_types')->nullOnDelete();
             $table->unsignedBigInteger('manager_id')->nullable();
             $table->unsignedBigInteger('branch_id')->nullable();
-            $table->unsignedBigInteger('shift_id')->nullable();
+            $table->foreignId('shift_id')->nullable()->constrained('shifts')->nullOnDelete();
             $table->string('marital_status')->nullable();
             $table->string('national_id')->nullable();
             $table->string('passport_no')->nullable();
@@ -44,14 +44,14 @@ return new class extends Migration
         });
 
         Schema::table('departments', function (Blueprint $table) {
-            $table->foreign('department_head_id')->references('id')->on('employees')->nullOnDelete();
+            $table->foreign('manager_employee_id')->references('id')->on('employees')->nullOnDelete();
         });
     }
 
     public function down(): void
     {
         Schema::table('departments', function (Blueprint $table) {
-            $table->dropForeign(['department_head_id']);
+            $table->dropForeign(['manager_employee_id']);
         });
 
         Schema::dropIfExists('employees');

@@ -24,7 +24,7 @@ class UpdateDepartmentRequest extends FormRequest
                 Rule::unique('departments', 'name')->ignore($departmentId),
             ],
             'description' => ['nullable', 'string'],
-            'department_head_id' => ['nullable', 'exists:employees,id'],
+            'manager_employee_id' => ['nullable', 'exists:employees,id'],
         ];
     }
 }
